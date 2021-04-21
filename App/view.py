@@ -24,6 +24,7 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from DISClib.ADT import orderedmap as om
 assert cf
 
 
@@ -49,7 +50,22 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-
+        analyzer = controller.initCatalog()
+        analyzer = controller.loadData(analyzer)
+        num_eventos = lt.size(analyzer['eventos'])
+        print('Se han cargado '+ str(num_eventos) + ' eventos!')
+        artistaslt = om.keySet(analyzer['context_content'])
+        num_artistas = lt.size(artistaslt)
+        print('Se han cargado ' + str(num_artistas) + ' artistas!') 
+        pistaslt = om.keySet(analyzer['user_track'])
+        num_pistas = lt.size(pistaslt)
+        print('Se han cargado ' + str(num_pistas) + ' pistas!')
+        for i in range(0, 5):
+            print(lt.getElement(analyzer['eventos'], i))
+        j = 0
+        while j <= 4:
+            print(lt.getElement(analyzer['eventos'], int(num_eventos) - j))
+            j += 1
     elif int(inputs[0]) == 2:
         pass
 

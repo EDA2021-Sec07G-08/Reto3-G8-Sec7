@@ -31,7 +31,49 @@ El controlador se encarga de mediar entre la vista y el modelo.
 
 # Inicialización del Catálogo de libros
 
+def initCatalog():
+
+    analyzer = model.newAnalyzer()
+    return analyzer
+
 # Funciones para la carga de datos
+
+def loadData(analyzer):
+
+    loadSentiments(analyzer, 'subsamples-small/sentiment_values.csv')
+    loadContext(analyzer, 'subsamples-small/context_content_features-small.csv')
+    loadUser(analyzer, 'subsamples-small/user_track_hashtag_timestamp-small.csv')
+
+    return analyzer
+
+def loadSentiments(analyzer, sentimentsfile):
+
+    sentimentsfile = cf.data_dir + sentimentsfile
+    input_file = csv.DictReader(open(sentimentsfile, encoding="utf-8"), delimiter = ",")
+
+    for sentiment in input_file:
+        model.addSentiments(analyzer, sentiment)
+    return analyzer
+
+def loadContext(analyzer, contextfile):
+
+    contextfile = cf.data_dir + contextfile
+    input_file = csv.DictReader(open(contextfile, encoding="utf-8"), delimiter = ",")
+
+    for context in input_file:
+        model.addContext(analyzer, context)
+    return analyzer
+
+def loadUser(analyzer, userfile):
+
+    userfile = cf.data_dir + userfile
+    input_file = csv.DictReader(open(userfile, encoding='utf-8'), delimiter = ",")
+
+    for user in input_file:
+        model.addUser(analyzer, user)
+    return analyzer
+
+
 
 # Funciones de ordenamiento
 

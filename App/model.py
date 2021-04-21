@@ -30,6 +30,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.ADT import orderedmap as om
 assert cf
 
 """
@@ -39,12 +40,63 @@ los mismos.
 
 # Construccion de modelos
 
+def newAnalyzer():
+
+    analyzer = {'eventos': None,
+                'sentiments': None}
+
+    analyzer['eventos'] = lt.newList('SINGLE_LINKED', compareIds)
+    analyzer['sentiments'] = om.newMap(omaptype='RBT', comparefunction=compareIds)
+    analyzer['context_content'] = om.newMap(omaptype='RBT', comparefunction=compareIds)
+    analyzer['user_track'] = om.newMap(omaptype='RBT', comparefunction= compareIds)
+
+    return analyzer
+    
+
 # Funciones para agregar informacion al catalogo
+
+def addSentiments(analyzer, sentiment):
+
+    om.put(analyzer['sentiments'], sentiment['hashtag'], sentiment)
+
+def addContext(analyzer, context):
+
+    exist = om.contains(analyzer['context_content'], context['artist_id'])
+    lt.addLast(analyzer['eventos'], context)
+    if exist == False:
+        newl = lt.newList()
+        lt.addLast(newl, context)
+        om.put(analyzer['context_content'], context['artist_id'], newl)
+    else:
+        key_value = om.get(analyzer['context_content'], context['artist_id'])
+        lista = me.getValue(key_value)
+        lt.addLast(lista, context)
+
+def addUser(analyzer, user):
+
+    exist = om.contains(analyzer['user_track'], user['track_id'])
+    if not exist:
+        newl = lt.newList()
+        lt.addLast(newl, user)
+        om.put(analyzer['user_track'], user['track_id'], newl)
+    else:
+        key_value = om.get(analyzer['user_track'], user['track_id'])
+        lista = me.getValue(key_value)
+        lt.addLast(lista, user)
 
 # Funciones para creacion de datos
 
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+
+def compareIds(id1, id2):
+
+    if id1 == id2:
+        return 0
+    elif id1 > id2:
+        return 1
+    else:
+        return -1
 
 # Funciones de ordenamiento
