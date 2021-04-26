@@ -62,6 +62,9 @@ def loadContext(analyzer, contextfile):
 
     for context in input_file:
         model.addContext(analyzer, context)
+        model.addTrack_id(analyzer,context)
+        model.addDanceability(analyzer,context)
+        model.addEnergy(analyzer,context)
     return analyzer
 
 def loadUser(analyzer, userfile):
@@ -72,8 +75,10 @@ def loadUser(analyzer, userfile):
     for user in input_file:
         model.addUser(analyzer, user)
     return analyzer
+ 
 
-
+def Requerimiento2 (analyzer,minDance,maxDance,minEnergy, maxEnergy): 
+    return model.Requerimiento2(analyzer,minDance,maxDance,minEnergy, maxEnergy)
 
 # Funciones de ordenamiento
 

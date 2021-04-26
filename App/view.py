@@ -39,6 +39,7 @@ def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
     print("2- ")
+    print("3- Requerimiento 2")
 
 catalog = None
 
@@ -66,9 +67,19 @@ while True:
         while j <= 4:
             print(lt.getElement(analyzer['eventos'], int(num_eventos) - j))
             j += 1
+
     elif int(inputs[0]) == 2:
         pass
 
+    elif int(inputs[0]) == 3:
+        minEnerg = input('Digite la cantidad minima del Energy ')
+        maxEnerg = input('Digite la cantidad máxima del Energy ')
+        minDancing = input('Digite la cantidad minima del Danceability ')
+        maxDancing = input('Digite la cantidad minima del Danceability ') 
+        print ('Energy is betweeen '+minEnerg+' and '+maxEnerg)
+        print ('Energy is betweeen '+minDancing+' and '+maxDancing)
+        result = controller.Requerimiento2(analyzer,minDancing,maxDancing,minEnerg,maxEnerg)
+        print (result)
     else:
         sys.exit(0)
 sys.exit(0)
