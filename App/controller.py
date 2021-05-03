@@ -65,6 +65,13 @@ def loadContext(analyzer, contextfile):
         model.addTrack_id(analyzer,context)
         model.addDanceability(analyzer,context)
         model.addEnergy(analyzer,context)
+        model.addInstrumentalness(analyzer, context)
+        model.addLiveness(analyzer, context)
+        model.addSpeechiness(analyzer, context)
+        model.addValence(analyzer, context)
+        model.addLoudness(analyzer, context)
+        model.addTempo(analyzer, context)
+        model.addAcousticness(analyzer, context)
     return analyzer
 
 def loadUser(analyzer, userfile):
@@ -76,6 +83,8 @@ def loadUser(analyzer, userfile):
         model.addUser(analyzer, user)
     return analyzer
  
+def Requerimiento1(analyzer, characteristic, min_range, max_range):
+    return model.Requerimiento1(analyzer, characteristic, min_range, max_range)
 
 def Requerimiento2 (analyzer,minDance,maxDance,minEnergy, maxEnergy): 
     return model.Requerimiento2(analyzer,minDance,maxDance,minEnergy, maxEnergy)

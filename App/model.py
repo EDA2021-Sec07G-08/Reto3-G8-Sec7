@@ -44,7 +44,19 @@ los mismos.
 def newAnalyzer():
 
     analyzer = {'eventos': None,
-                'sentiments': None}
+                'sentiments': None,
+                'context_content': None,
+                'user_track' : None,
+                'track_ids': None,
+                'danceability' : None,
+                'energy': None,
+                'instrumentalness': None,
+                'liveness': None,
+                'speechiness': None,
+                'valence': None,
+                'loudness': None,
+                'tempo': None,
+                'acousticness': None}
 
     analyzer['eventos'] = lt.newList('SINGLE_LINKED', compareIds)
     analyzer['sentiments'] = om.newMap(omaptype='RBT', comparefunction=compareIds)
@@ -53,6 +65,13 @@ def newAnalyzer():
     analyzer['track_ids'] = om.newMap(omaptype='RBT', comparefunction= compareIds)
     analyzer['danceability'] = om.newMap(omaptype='RBT', comparefunction= compareIds)
     analyzer['energy']= om.newMap(omaptype='RBT', comparefunction= compareIds) 
+    analyzer['instrumentalness'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
+    analyzer['liveness'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
+    analyzer['speechiness'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
+    analyzer['valence'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
+    analyzer['loudness'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
+    analyzer['tempo'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
+    analyzer['acousticness'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
 
     return analyzer
     
@@ -121,6 +140,83 @@ def addEnergy(analyzer,energy) :
         lista = me.getValue(key_value)
         lt.addLast(lista, energy)
 
+def addInstrumentalness(analyzer, context):
+    exist = om.contains(analyzer['instrumentalness'], context['instrumentalness'])
+    if not exist:
+        newl = lt.newList()
+        lt.addLast(newl, context)
+        om.put(analyzer['instrumentalness'], context['instrumentalness'], newl)
+    else:
+        key_value = om.get(analyzer['instrumentalness'], context['instrumentalness'])
+        lista = me.getValue(key_value)
+        lt.addLast(lista, context)
+
+def addLiveness(analyzer, context):
+    exist = om.contains(analyzer['liveness'], context['liveness'])
+    if not exist:
+        newl = lt.newList()
+        lt.addLast(newl, context)
+        om.put(analyzer['liveness'], context['liveness'], newl)
+    else:
+        key_value = om.get(analyzer['liveness'], context['liveness'])
+        lista = me.getValue(key_value)
+        lt.addLast(lista, context)
+
+def addSpeechiness(analyzer, context):
+    exist = om.contains(analyzer['speechiness'], context['speechiness'])
+    if not exist:
+        newl = lt.newList()
+        lt.addLast(newl, context)
+        om.put(analyzer['speechiness'], context['speechiness'], newl)
+    else:
+        key_value = om.get(analyzer['speechiness'], context['speechiness'])
+        lista = me.getValue(key_value)
+        lt.addLast(lista, context)
+
+def addValence(analyzer, context):
+    exist = om.contains(analyzer['valence'], context['valence'])
+    if not exist:
+        newl = lt.newList()
+        lt.addLast(newl, context)
+        om.put(analyzer['valence'], context['valence'], newl)
+    else:
+        key_value = om.get(analyzer['valence'], context['valence'])
+        lista = me.getValue(key_value)
+        lt.addLast(lista, context)
+
+def addLoudness(analyzer, context):
+    exist = om.contains(analyzer['loudness'], context['loudness'])
+    if not exist:
+        newl = lt.newList()
+        lt.addLast(newl, context)
+        om.put(analyzer['loudness'], context['loudness'], newl)
+    else:
+        key_value = om.get(analyzer['loudness'], context['loudness'])
+        lista = me.getValue(key_value)
+        lt.addLast(lista, context)
+
+def addTempo(analyzer, context):
+    exist = om.contains(analyzer['tempo'], context['tempo'])
+    if not exist:
+        newl = lt.newList()
+        lt.addLast(newl, context)
+        om.put(analyzer['tempo'], context['tempo'], newl)
+    else:
+        key_value = om.get(analyzer['tempo'], context['tempo'])
+        lista = me.getValue(key_value)
+        lt.addLast(lista, context)
+
+def addAcousticness(analyzer, context):
+    exist = om.contains(analyzer['acousticness'], context['acousticness'])
+    if not exist:
+        newl = lt.newList()
+        lt.addLast(newl, context)
+        om.put(analyzer['acousticness'], context['acousticness'], newl)
+    else:
+        key_value = om.get(analyzer['acousticness'], context['acousticness'])
+        lista = me.getValue(key_value)
+        lt.addLast(lista, context)
+
 # Funciones para creacion de datos
 
 # Funciones de consulta
@@ -137,6 +233,26 @@ def compareIds(id1, id2):
         return -1
 
 # Funciones de ordenamiento
+
+def Requerimiento1(analyzer, characteristic, min_range, max_range):
+    keys_in_range = om.keys(analyzer[characteristic], min_range, max_range)
+    mapa = om.newMap()
+    events = 0
+    for i in range(lt.size(keys_in_range)):
+        key = lt.getElement(keys_in_range, i)
+        exist = om.contains(mapa, key)
+        if not exist:
+            value = om.get(analyzer[characteristic], key)
+            value = me.getValue(value)
+            for i in range(lt.size(value)):
+                dicc = lt.getElement(value, i)
+                artist = dicc['artist_id']
+                om.put(mapa, artist, value)
+                events += 1
+    
+    return events, om.size(mapa)
+
+
 def Requerimiento2( analyzer,minDance,maxDance,minEnergy, maxEnergy):
     keysDance = om.keys(analyzer['danceability'],minDance,maxDance)
     keysTracks = om.keySet(analyzer['track_ids'])

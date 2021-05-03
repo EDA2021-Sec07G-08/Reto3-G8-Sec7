@@ -67,9 +67,12 @@ while True:
         while j <= 4:
             print(lt.getElement(analyzer['eventos'], int(num_eventos) - j))
             j += 1
-
     elif int(inputs[0]) == 2:
-        pass
+        characteristic = input('Ingrese la caracteristica de contenido: ')
+        min_range = input('Ingrese el rango minimo: ')
+        max_range = input('Ingrese el rango maximo: ')
+        ans = controller.Requerimiento1(analyzer, characteristic, min_range, max_range)
+        print('Total of reproductions: ' + str(ans[0]) + ' Total of unique artists: ' + str(ans[1]))
 
     elif int(inputs[0]) == 3:
         minEnerg = input('Digite la cantidad minima del Energy ')
