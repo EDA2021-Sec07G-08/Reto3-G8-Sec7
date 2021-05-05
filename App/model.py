@@ -285,3 +285,34 @@ def Requerimiento2( analyzer,minDance,maxDance,minEnergy, maxEnergy):
             contador += 1 
 
     return (contador, listaA)
+
+def Requerimiento3(analyzer, minIns, maxIns, minTemp, maxTemp):
+    keys_in_range = om.keys(analyzer['instrumentalness'], minIns, maxIns)
+    mapa = analyzer['instrumentalness']
+    map_respuesta = om.newMap()
+    lista_tracks = lt.newList()
+    for i in range(lt.size(keys_in_range)):
+        key = lt.getElement(keys_in_range, i)
+        valores = om.get(mapa, key)
+        valores = me.getValue(valores)
+        for i in range(lt.size(valores)):
+            small = lt.getElement(valores, i)
+            if small['tempo'] >= minTemp and small['tempo'] <= maxTemp:
+                track_id = small['track_id']
+                exist = om.contains(map_respuesta, track_id)
+                if not exist:
+                    tupla = small['instrumentalness'], small['tempo']
+                    om.put(map_respuesta, track_id, tupla)
+                    lt.addLast(lista_tracks, track_id)
+
+    print('Total of unique tracks in events: '+ str(lt.size(lista_tracks)))
+    i = 0
+    while i < 5:
+        rand = rd.randint(0, lt.size(lista_tracks))
+        track = lt.getElement(lista_tracks, rand)
+        tupla_f = om.get(map_respuesta, track)
+        tupla_f = me.getValue(tupla_f)
+        print('Track ' + str(i + 1) + ' :' +str(track) + ' with instrumentalness of ' + str(tupla_f[0]) + ' and tempo of ' + str(tupla_f[1]))
+        i += 1
+
+    

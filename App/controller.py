@@ -89,6 +89,9 @@ def Requerimiento1(analyzer, characteristic, min_range, max_range):
 def Requerimiento2 (analyzer,minDance,maxDance,minEnergy, maxEnergy): 
     return model.Requerimiento2(analyzer,minDance,maxDance,minEnergy, maxEnergy)
 
+def Requerimiento3(analyzer, minIns, maxIns, minTemp, maxTemp):
+    return model.Requerimiento3(analyzer, minIns, maxIns, minTemp, maxTemp)
+
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo

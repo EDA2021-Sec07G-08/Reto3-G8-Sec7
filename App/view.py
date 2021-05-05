@@ -38,8 +38,9 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("2- Requerimiento 1")
     print("3- Requerimiento 2")
+    print("4 - Requerimiento 3")
 
 catalog = None
 
@@ -83,6 +84,12 @@ while True:
         print ('Energy is betweeen '+minDancing+' and '+maxDancing)
         result = controller.Requerimiento2(analyzer,minDancing,maxDancing,minEnerg,maxEnerg)
         print (result)
+    elif int(inputs[0]) == 4:
+        minIns = input('Ingrese la cantidad minima de Instrumentalness: ')
+        maxIns = input('Ingrese la cantidad maxima de Instrumentalness: ')
+        minTemp = input('Ingrese la cantidad minima de Tempo: ')
+        maxTemp = input('Ingrese la cantidad maxima de Tempo: ')
+        controller.Requerimiento3(analyzer, minIns, maxIns, minTemp, maxTemp)
     else:
         sys.exit(0)
 sys.exit(0)
