@@ -259,6 +259,7 @@ def Requerimiento2( analyzer,minDance,maxDance,minEnergy, maxEnergy):
 
     listaR = lt.newList()
     listaA = lt.newList()
+    mapa_tracks = mp.newMap()
     for i in range (0,lt.size(keysDance)):
         key = lt.getElement(keysDance,i)
         keyvalue = om.get(analyzer['danceability'], key)
@@ -268,23 +269,16 @@ def Requerimiento2( analyzer,minDance,maxDance,minEnergy, maxEnergy):
             value1= lt.getElement(value,j)
 
             if float(value1['energy']) > float(minEnergy) and float(value1["energy"]) < float(maxEnergy) : 
-                lt.addLast(listaR,keyvalue)
-    
-    i = 0 
+                lt.addLast(listaR,value1)
+                mp.put(mapa_tracks,value1['track_id'],0)
+    i = 1 
     while i <= 5 :
         x = rd.randint(0,lt.size(listaR))
         elemento = lt.getElement(listaR,x)
         lt.addLast(listaA,elemento)
         i += 1
-    contador = 0 
-    for i in range (0,lt.size(keysTracks)):
-        key = lt.getElement(keysTracks,i)
-        keyvalue = om.get(analyzer['track_ids'],key)
-        value = me.getValue(keyvalue)
-        if lt.size(value) == 1:
-            contador += 1 
 
-    return (contador, listaA)
+    return (mp.size(mapa_tracks), listaA)
 
 def Requerimiento3(analyzer, minIns, maxIns, minTemp, maxTemp):
     keys_in_range = om.keys(analyzer['instrumentalness'], minIns, maxIns)
@@ -315,4 +309,4 @@ def Requerimiento3(analyzer, minIns, maxIns, minTemp, maxTemp):
         print('Track ' + str(i + 1) + ' :' +str(track) + ' with instrumentalness of ' + str(tupla_f[0]) + ' and tempo of ' + str(tupla_f[1]))
         i += 1
 
-    
+def Requerimiento5 ( )
