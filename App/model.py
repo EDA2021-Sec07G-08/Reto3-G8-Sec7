@@ -1,4 +1,4 @@
-"""
+﻿"""
  * Copyright 2020, Departamento de sistemas y Computación,
  * Universidad de Los Andes
  *
@@ -396,4 +396,3 @@ def Requerimiento4(analyzer, str_generos):
 
     requerimiento_4_print(max_eventos, final)
 
-    

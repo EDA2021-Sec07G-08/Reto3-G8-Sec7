@@ -1,4 +1,4 @@
-"""
+﻿"""
  * Copyright 2020, Departamento de sistemas y Computación,
  * Universidad de Los Andes
  *
@@ -83,7 +83,7 @@ def loadUser(analyzer, userfile):
     for user in input_file:
         model.addUser(analyzer, user)
     return analyzer
- 
+
 def loadGenres(analyzer):
     names = ['reggae', 'down_tempo', 'chill-out', 'hip-hop', 'jazz and funk', 'pop', 'r&b', 'rock', 'metal']
     tempos = [[60,90], [70,100], [90,120], [85,115], [120,125], [100,130], [60,80], [110,140], [100,160]]
