@@ -83,8 +83,7 @@ while True:
         maxDancing = input('Digite la cantidad minima del Danceability ') 
         print ('Energy is betweeen '+minEnerg+' and '+maxEnerg)
         print ('Energy is betweeen '+minDancing+' and '+maxDancing)
-        result = controller.Requerimiento2(analyzer,minDancing,maxDancing,minEnerg,maxEnerg)
-        print (result)
+        controller.Requerimiento2(analyzer,minDancing,maxDancing,minEnerg,maxEnerg)
     elif int(inputs[0]) == 4:
         minIns = input('Ingrese la cantidad minima de Instrumentalness: ')
         maxIns = input('Ingrese la cantidad maxima de Instrumentalness: ')
