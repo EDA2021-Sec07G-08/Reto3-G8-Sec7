@@ -346,7 +346,6 @@ def Requerimiento3(analyzer, minIns, maxIns, minTemp, maxTemp):
         print('Track ' + str(i + 1) + ' :' +str(track) + ' with instrumentalness of ' + str(tupla_f[0]) + ' and tempo of ' + str(tupla_f[1]))
         i += 1
 
-<<<<<<< HEAD
 def Requerimiento4(analyzer, str_generos):
 
     generos_lower = str_generos.lower()
@@ -397,6 +396,3 @@ def Requerimiento4(analyzer, str_generos):
 
     requerimiento_4_print(max_eventos, final)
 
-=======
-def Requerimiento5 ( )
->>>>>>> a5371a5969c842a5e982397d0e34e1c3d0abb9ed
