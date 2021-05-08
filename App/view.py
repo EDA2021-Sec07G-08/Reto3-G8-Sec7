@@ -1,4 +1,4 @@
-﻿"""
+"""
  * Copyright 2020, Departamento de sistemas y Computación, Universidad
  * de Los Andes
  *
@@ -40,7 +40,8 @@ def printMenu():
     print("1- Cargar información en el catálogo")
     print("2- Requerimiento 1")
     print("3- Requerimiento 2")
-    print("4 - Requerimiento 3")
+    print("4- Requerimiento 3")
+    print("5- Requerimiento 4")
 
 catalog = None
 
@@ -90,6 +91,16 @@ while True:
         minTemp = input('Ingrese la cantidad minima de Tempo: ')
         maxTemp = input('Ingrese la cantidad maxima de Tempo: ')
         controller.Requerimiento3(analyzer, minIns, maxIns, minTemp, maxTemp)
+    elif int(inputs[0]) == 5:
+        eleccion = input('¿Desea ingresar un nuevo genero musical (1) o hacer una busqueda por genero (2)?')
+        if eleccion == '1':
+            nombre = input('Ingrese el nombre del genero musical: ')
+            minTemp = input('Ingrese el valor minimo del tempo: ')
+            maxTemp = input('Ingrese el valor maximo del tempo: ')
+            controller.addGenre(analyzer, nombre, minTemp, maxTemp)
+        else:
+            str_generos = input('Ingrese los generos que desea conocer separados por coma: ')
+            controller.Requerimiento4(analyzer, str_generos)
     else:
         sys.exit(0)
 sys.exit(0)

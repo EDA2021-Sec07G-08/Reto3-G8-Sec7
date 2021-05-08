@@ -1,4 +1,4 @@
-﻿"""
+"""
  * Copyright 2020, Departamento de sistemas y Computación,
  * Universidad de Los Andes
  *
@@ -56,7 +56,8 @@ def newAnalyzer():
                 'valence': None,
                 'loudness': None,
                 'tempo': None,
-                'acousticness': None}
+                'acousticness': None,
+                'genres': None}
 
     analyzer['eventos'] = lt.newList('SINGLE_LINKED', compareIds)
     analyzer['sentiments'] = om.newMap(omaptype='RBT', comparefunction=compareIds)
@@ -70,8 +71,9 @@ def newAnalyzer():
     analyzer['speechiness'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
     analyzer['valence'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
     analyzer['loudness'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
-    analyzer['tempo'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
+    analyzer['tempo'] = om.newMap(omaptype='RBT') 
     analyzer['acousticness'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
+    analyzer['genres'] = om.newMap(omaptype= 'RBT', comparefunction= compareIds)
 
     return analyzer
     
@@ -196,13 +198,13 @@ def addLoudness(analyzer, context):
         lt.addLast(lista, context)
 
 def addTempo(analyzer, context):
-    exist = om.contains(analyzer['tempo'], context['tempo'])
+    exist = om.contains(analyzer['tempo'], float(context['tempo']))
     if not exist:
         newl = lt.newList()
         lt.addLast(newl, context)
-        om.put(analyzer['tempo'], context['tempo'], newl)
+        om.put(analyzer['tempo'], float(context['tempo']), newl)
     else:
-        key_value = om.get(analyzer['tempo'], context['tempo'])
+        key_value = om.get(analyzer['tempo'], float(context['tempo']))
         lista = me.getValue(key_value)
         lt.addLast(lista, context)
 
@@ -216,6 +218,13 @@ def addAcousticness(analyzer, context):
         key_value = om.get(analyzer['acousticness'], context['acousticness'])
         lista = me.getValue(key_value)
         lt.addLast(lista, context)
+
+def addGenres(analyzer, name, minTemp, maxTemp):
+    exist = om.contains(analyzer['genres'], name)
+    if not exist:
+        tupla = minTemp, maxTemp
+        om.put(analyzer['genres'], name, tupla)
+        
 
 # Funciones para creacion de datos
 
@@ -233,6 +242,28 @@ def compareIds(id1, id2):
         return -1
 
 # Funciones de ordenamiento
+
+def requerimiento_4_print(max_events, lista):
+
+    print('+++++++ Req No. 4 results... ++++++ \n')
+    print('Total of reproductions: ' + str(max_events) + '\n')
+
+    num = lt.size(lista)
+    num += 1
+
+    for i in range(1,num):
+        listilla = lt.getElement(lista, i)
+        print('====== ' + str(listilla[0]) + ' ====== \n')
+        print('For ' + str(listilla[0]) + ' the tempo is between ' + str(listilla[1]) + ' and ' + str(listilla[2]) + ' BPM \n')
+        print(str(listilla[0]) + ' reproductions: ' + str(listilla[3]) + ' with ' + str(listilla[4]) + ' different artists \n')
+        print('-----' + str(listilla[0]) + '------ \n')
+
+        i = 0
+
+        while i < 10:
+            listilla_artistas = listilla[5]
+            print('Artist ' + str(i + 1) + ": " + str(lt.getElement(listilla_artistas, i)))
+            i += 1
 
 def Requerimiento1(analyzer, characteristic, min_range, max_range):
     keys_in_range = om.keys(analyzer[characteristic], min_range, max_range)
@@ -314,5 +345,55 @@ def Requerimiento3(analyzer, minIns, maxIns, minTemp, maxTemp):
         tupla_f = me.getValue(tupla_f)
         print('Track ' + str(i + 1) + ' :' +str(track) + ' with instrumentalness of ' + str(tupla_f[0]) + ' and tempo of ' + str(tupla_f[1]))
         i += 1
+
+def Requerimiento4(analyzer, str_generos):
+
+    generos_lower = str_generos.lower()
+    lista_generos = generos_lower.split(',')
+    final = lt.newList()
+    for i in range(len(lista_generos)):
+        lista_genero = lt.newList()
+        mapa = analyzer['genres']
+        busqueda_map = om.get(mapa, lista_generos[i])
+        tupla = me.getValue(busqueda_map)
+        name = me.getKey(busqueda_map)
+        minTemp = int(tupla[0])
+        maxTemp = int(tupla[1])
+        keys_in_range = om.keys(analyzer['tempo'], minTemp, maxTemp)
+        events_parciales = lt.size(keys_in_range)
+
+        lt.addLast(lista_genero, events_parciales)
+
+        mp_artistas = om.newMap()
+        lt_artistas = lt.newList()
+
+        for i in range(lt.size(keys_in_range)):
+            key = float(lt.getElement(keys_in_range, i))
+            mapa_tempo = analyzer['tempo']
+            valores = om.get(mapa_tempo, key)
+            valores = me.getValue(valores)
+
+            for i in range(lt.size(valores)):
+                valor = lt.getElement(valores, i)
+                exist = om.contains(mp_artistas, valor['artist_id'])
+
+                if not exist:
+                    artist_id = valor['artist_id']
+                    om.put(mp_artistas, artist_id, valor)
+                    while lt.size(lt_artistas) <= 10:
+                        lt.addLast(lt_artistas, artist_id)
+
+        artistas_parciales = om.size(mp_artistas)
+
+        lt_final_genero = [name, minTemp, maxTemp, events_parciales, artistas_parciales, lt_artistas]
+        lt.addLast(final, lt_final_genero) 
+
+    max_eventos = 0
+
+    for i in range(lt.size(final)):
+        listilla = lt.getElement(final, i)
+        max_eventos += int(listilla[3])
+
+    requerimiento_4_print(max_eventos, final)
 
     

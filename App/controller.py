@@ -1,4 +1,4 @@
-﻿"""
+"""
  * Copyright 2020, Departamento de sistemas y Computación,
  * Universidad de Los Andes
  *
@@ -43,6 +43,7 @@ def loadData(analyzer):
     loadSentiments(analyzer, 'subsamples-small/sentiment_values.csv')
     loadContext(analyzer, 'subsamples-small/context_content_features-small.csv')
     loadUser(analyzer, 'subsamples-small/user_track_hashtag_timestamp-small.csv')
+    loadGenres(analyzer)
 
     return analyzer
 
@@ -83,6 +84,19 @@ def loadUser(analyzer, userfile):
         model.addUser(analyzer, user)
     return analyzer
  
+def loadGenres(analyzer):
+    names = ['reggae', 'down_tempo', 'chill-out', 'hip-hop', 'jazz and funk', 'pop', 'r&b', 'rock', 'metal']
+    tempos = [[60,90], [70,100], [90,120], [85,115], [120,125], [100,130], [60,80], [110,140], [100,160]]
+    
+    for i in range(len(names)):
+        name = names[i]
+        minTemp = tempos[i][0]
+        maxTemp = tempos[i][1]
+        model.addGenres(analyzer, name, minTemp, maxTemp)
+
+def addGenre(analyzer, name, minTemp, maxTemp):
+    return model.addGenre(analyzer, name, minTemp, maxTemp)
+ 
 def Requerimiento1(analyzer, characteristic, min_range, max_range):
     return model.Requerimiento1(analyzer, characteristic, min_range, max_range)
 
@@ -91,6 +105,9 @@ def Requerimiento2 (analyzer,minDance,maxDance,minEnergy, maxEnergy):
 
 def Requerimiento3(analyzer, minIns, maxIns, minTemp, maxTemp):
     return model.Requerimiento3(analyzer, minIns, maxIns, minTemp, maxTemp)
+
+def Requerimiento4(analyzer, str_generos):
+    return model.Requerimiento4(analyzer, str_generos)
 
 # Funciones de ordenamiento
 
