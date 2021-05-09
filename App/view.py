@@ -26,6 +26,9 @@ import controller
 from DISClib.ADT import list as lt
 from DISClib.ADT import orderedmap as om
 assert cf
+from datetime import time
+import time
+import datetime
 
 
 """
@@ -42,6 +45,7 @@ def printMenu():
     print("3- Requerimiento 2")
     print("4- Requerimiento 3")
     print("5- Requerimiento 4")
+    print("6- Requerimiento 5")
 
 catalog = None
 
@@ -100,6 +104,18 @@ while True:
         else:
             str_generos = input('Ingrese los generos que desea conocer separados por coma: ')
             controller.Requerimiento4(analyzer, str_generos)
+    elif int(inputs[0]) == 6:
+        minHor = input('Ingrese la hora mínima: ')
+        maxHor = input('Ingrese la hora maxima: ')
+
+        minHor = minHor.split(":")
+        minHor= datetime.time(int(minHor[0]),int(minHor[1]))
+        maxHor = maxHor.split(":")
+        maxHor= datetime.time(int(maxHor[0]),int(maxHor[1]))
+        
+        controller.Requerimiento5(analyzer,minHor,maxHor)
+        print(minHor)
+        print(maxHor)
     else:
         sys.exit(0)
 sys.exit(0)

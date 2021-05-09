@@ -82,6 +82,7 @@ def loadUser(analyzer, userfile):
 
     for user in input_file:
         model.addUser(analyzer, user)
+        model.addCreated(analyzer,user)
     return analyzer
 
 def loadGenres(analyzer):
@@ -108,6 +109,9 @@ def Requerimiento3(analyzer, minIns, maxIns, minTemp, maxTemp):
 
 def Requerimiento4(analyzer, str_generos):
     return model.Requerimiento4(analyzer, str_generos)
+
+def Requerimiento5(analyzer,minHora,maxHora):
+    return model.Requerimiento5(analyzer,minHora,maxHora)
 
 # Funciones de ordenamiento
 

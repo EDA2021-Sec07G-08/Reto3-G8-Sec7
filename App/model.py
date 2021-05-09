@@ -32,6 +32,10 @@ from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.ADT import orderedmap as om
 import random as rd
+from datetime import time
+import time
+import datetime
+from DISClib.DataStructures import listiterator as it
 assert cf
 
 """
@@ -74,7 +78,7 @@ def newAnalyzer():
     analyzer['tempo'] = om.newMap(omaptype='RBT') 
     analyzer['acousticness'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
     analyzer['genres'] = om.newMap(omaptype= 'RBT', comparefunction= compareIds)
-
+    analyzer['created_at']= om.newMap(omaptype= 'RBT', comparefunction= compareIds)
     return analyzer
     
 
@@ -225,8 +229,23 @@ def addGenres(analyzer, name, minTemp, maxTemp):
         tupla = minTemp, maxTemp
         om.put(analyzer['genres'], name, tupla)
         
-
+def addCreated(analyzer,created_at):
+    
+    fecha = datetime.datetime.strptime(created_at['created_at'], '%Y-%m-%d %H:%M:%S')
+    entry = fecha.time()
+    
+    exist = om.contains(analyzer['created_at'], entry)
+    if not exist:
+        newl = lt.newList()
+        lt.addLast(newl, created_at)
+        om.put(analyzer['created_at'], entry, newl)
+    else:
+        key_value = om.get(analyzer['created_at'], entry)
+        lista = me.getValue(key_value)
+        lt.addLast(lista, created_at)
+    
 # Funciones para creacion de datos
+
 
 # Funciones de consulta
 
@@ -287,7 +306,6 @@ def Requerimiento1(analyzer, characteristic, min_range, max_range):
 def Requerimiento2( analyzer,minDance,maxDance,minEnergy, maxEnergy):
     keysDance = om.keys(analyzer['danceability'],minDance,maxDance)
     keysTracks = om.keySet(analyzer['track_ids'])
-
     listaR = lt.newList()
     listaA = lt.newList()
     mapa_tracks = mp.newMap()
@@ -400,3 +418,13 @@ def Requerimiento4(analyzer, str_generos):
 
     requerimiento_4_print(max_eventos, final)
 
+def Requerimiento5(analyzer,minHora,maxHora):
+    value = om.values(analyzer['created_at'],minHora,maxHora)
+    iterador = it.newIterator(value)
+    while it.hasNext(iterador):
+        elemento = it.next(iterador)
+        iterador2 = it.newIterator(elemento)
+        while it.hasNext(iterador2):
+            elemento2 = it.next(iterador2)
+            print(elemento2)
+    
