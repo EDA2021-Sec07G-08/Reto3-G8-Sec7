@@ -73,6 +73,7 @@ def loadContext(analyzer, contextfile):
         model.addLoudness(analyzer, context)
         model.addTempo(analyzer, context)
         model.addAcousticness(analyzer, context)
+        model.addCreatedAtContext(analyzer, context)
     return analyzer
 
 def loadUser(analyzer, userfile):
@@ -112,6 +113,9 @@ def Requerimiento4(analyzer, str_generos):
 
 def Requerimiento5(analyzer,minHora,maxHora):
     return model.Requerimiento5(analyzer,minHora,maxHora)
+
+def Requerimiento5maps(analyzer, minHora, maxHora):
+    return model.Requerimiento5maps(analyzer, minHora, maxHora)
 
 # Funciones de ordenamiento
 

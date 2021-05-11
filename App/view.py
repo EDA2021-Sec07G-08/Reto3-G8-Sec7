@@ -113,9 +113,9 @@ while True:
         maxHor = maxHor.split(":")
         maxHor= datetime.time(int(maxHor[0]),int(maxHor[1]))
         
-        controller.Requerimiento5(analyzer,minHor,maxHor)
-        print(minHor)
-        print(maxHor)
+
+        print(controller.Requerimiento5maps(analyzer, minHor, maxHor))
+
     else:
         sys.exit(0)
 sys.exit(0)

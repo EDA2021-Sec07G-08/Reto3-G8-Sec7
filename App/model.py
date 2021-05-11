@@ -61,7 +61,9 @@ def newAnalyzer():
                 'loudness': None,
                 'tempo': None,
                 'acousticness': None,
-                'genres': None}
+                'genres': None,
+                'created_at' : None,
+                'created_track': None}
 
     analyzer['eventos'] = lt.newList('SINGLE_LINKED', compareIds)
     analyzer['sentiments'] = om.newMap(omaptype='RBT', comparefunction=compareIds)
@@ -79,6 +81,8 @@ def newAnalyzer():
     analyzer['acousticness'] = om.newMap(omaptype='RBT', comparefunction= compareIds) 
     analyzer['genres'] = om.newMap(omaptype= 'RBT', comparefunction= compareIds)
     analyzer['created_at']= om.newMap(omaptype= 'RBT', comparefunction= compareIds)
+    analyzer['created_track'] = om.newMap(omaptype='RBT', comparefunction= compareIds)
+    analyzer['context_created'] = om.newMap(omaptype='RBT', comparefunction= compareIds)
     return analyzer
     
 
@@ -86,7 +90,8 @@ def newAnalyzer():
 
 def addSentiments(analyzer, sentiment):
 
-    om.put(analyzer['sentiments'], sentiment['hashtag'], sentiment)
+    if sentiment['vader_avg'] is not None:
+        om.put(analyzer['sentiments'], sentiment['hashtag'], sentiment['vader_avg'])
 
 def addContext(analyzer, context):
 
@@ -105,13 +110,29 @@ def addUser(analyzer, user):
 
     exist = om.contains(analyzer['user_track'], user['track_id'])
     if not exist:
-        newl = lt.newList()
-        lt.addLast(newl, user)
-        om.put(analyzer['user_track'], user['track_id'], newl)
-    else:
-        key_value = om.get(analyzer['user_track'], user['track_id'])
-        lista = me.getValue(key_value)
-        lt.addLast(lista, user)
+        key = user['track_id']
+        hashtag = user['hashtag'].lower()
+        if om.contains(analyzer['sentiments'], hashtag):
+            pareja = om.get(analyzer['sentiments'], hashtag)
+            vader = me.getValue(pareja)
+            lista_valor_track_id = lt.newList()
+            lt.addFirst(lista_valor_track_id, vader)
+            lt.addLast(lista_valor_track_id, hashtag)
+            om.put(analyzer['user_track'], key, lista_valor_track_id)
+    if exist:
+        key = user['track_id']
+        hashtag = user['hashtag'].lower()
+        if om.contains(analyzer['sentiments'], hashtag):
+            pareja_lista_valor_track = om.get(analyzer['user_track'], user['track_id'])
+            lista_valor_track = me.getValue(pareja_lista_valor_track)
+            count = 0
+            for i in range(lt.size(lista_valor_track)):
+                presencia = lt.isPresent(lista_valor_track, hashtag)
+            if presencia == 0:
+                lt.addLast(lista_valor_track, hashtag) 
+
+
+            
     
 def addTrack_id(analyzer,track) : 
     exist = om.contains(analyzer['track_ids'], track['track_id'])
@@ -243,6 +264,22 @@ def addCreated(analyzer,created_at):
         key_value = om.get(analyzer['created_at'], entry)
         lista = me.getValue(key_value)
         lt.addLast(lista, created_at)
+
+def addCreatedAtContext(analyzer, context):
+
+    fecha = datetime.datetime.strptime(context['created_at'], '%Y-%m-%d %H:%M:%S')
+    entry = fecha.time()
+
+    exist = om.contains(analyzer['context_created'], entry)
+    if not exist:
+        newl = lt.newList()
+        lt.addLast(newl, context)
+        om.put(analyzer['context_created'], entry, newl)
+    else:
+        key_value = om.get(analyzer['context_created'], entry)
+        lista = me.getValue(key_value)
+        lt.addLast(lista, context)
+    
     
 # Funciones para creacion de datos
 
@@ -420,6 +457,7 @@ def Requerimiento4(analyzer, str_generos):
 
 def Requerimiento5(analyzer,minHora,maxHora):
     value = om.values(analyzer['created_at'],minHora,maxHora)
+    print(value)
     iterador = it.newIterator(value)
     while it.hasNext(iterador):
         elemento = it.next(iterador)
@@ -427,4 +465,76 @@ def Requerimiento5(analyzer,minHora,maxHora):
         while it.hasNext(iterador2):
             elemento2 = it.next(iterador2)
             print(elemento2)
+
+def Requerimiento5maps(analyzer, minHora, maxHora):
+    
+    valores = om.keys(analyzer['context_created'], minHora, maxHora)
+    generos = om.keySet(analyzer['genres'])
+
+    respuesta = om.newMap()
+
+    for i in range(lt.size(valores)):
+        key_value = lt.getElement(valores, i)
+        info_context_pareja = om.get(analyzer['context_created'], key_value)
+        context = me.getValue(info_context_pareja)
+        for i in range(lt.size(context)):
+            info_context = lt.getElement(context, i)
+        for i in range(lt.size(generos)):
+            key_genero = lt.getElement(generos, i)
+            info_genero_pareja = om.get(analyzer['genres'], key_genero)
+            info_genero = me.getValue(info_genero_pareja)
+            minTemp = float(info_genero[0])
+            maxTemp = float(info_genero[1])
+            if float(info_context['tempo']) >= minTemp and float(info_context['tempo']) <= maxTemp:
+
+                contains = om.contains(respuesta, key_genero)
+                if not contains:
+                    track_id = info_context['track_id']
+
+                    #extraccion info relevante
+
+                    llave_valor_info_adicional = om.get(analyzer['user_track'], track_id)
+                    info_adicional = me.getValue(llave_valor_info_adicional)
+                    vader = lt.getElement(info_adicional, 1)
+                    hashtags = lt.size(info_adicional) - 1
+
+                    lista_genero = lt.newList()
+
+                    track = {}
+
+                    track['track_id'] = track_id
+                    track['vader'] = vader
+                    track['num_hashtags'] = hashtags
+
+                    lt.addLast(lista_genero, track)
+
+                    om.put(respuesta, key_genero, lista_genero)
+                
+                if contains:
+                    track_id = info_context['track_id']
+
+                    llave_valor_info_adicional = om.get(analyzer['user_track'], track_id)
+                    info_adicional = me.getValue(llave_valor_info_adicional)
+                    vader = lt.getElement(info_adicional, 1)
+                    hashtags = lt.size(info_adicional) - 1
+
+                    pareja_lista_genero = om.get(respuesta, key_genero)
+                    lista_genero = me.getValue(pareja_lista_genero)
+
+                    track = {}
+
+                    track['track_id'] = track_id
+                    track['vader'] = vader
+                    track['num_hashtags'] = hashtags
+
+                    lt.addLast(lista_genero, track)
+    
+    return respuesta
+
+
+
+
+
+        
+
     
